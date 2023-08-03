@@ -79,11 +79,13 @@ const keys = {
 let lastkey = "";
 
 const map = [
-  ["-", "-", "-", "-", "-", "-"],
-  ["-", " ", " ", " ", " ", "-"],
-  ["-", " ", "-", "-", " ", "-"],
-  ["-", " ", " ", " ", " ", "-"],
-  ["-", "-", "-", "-", "-", "-"],
+  ["-", "-", "-", "-", "-", "-", "-"],
+  ["-", " ", " ", " ", " ", " ", "-"],
+  ["-", " ", "-", " ", "-", " ", "-"],
+  ["-", " ", " ", " ", " ", " ", "-"],
+  ["-", " ", "-", " ", "-", " ", "-"],
+  ["-", " ", " ", " ", " ", " ", "-"],
+  ["-", "-", "-", "-", "-", "-", "-"],
 ];
 
 map.forEach((row, i) => {
@@ -102,25 +104,117 @@ map.forEach((row, i) => {
   });
 });
 
+function circleCollidesWithRectangle({ circle, rectangle }) {
+  return (
+    circle.position.y - circle.radius + circle.velocity.y <=
+      rectangle.position.y + rectangle.height &&
+    circle.position.x + circle.radius + circle.velocity.x >=
+      rectangle.position.x &&
+    circle.position.y + circle.radius + circle.velocity.y >=
+      rectangle.position.y &&
+    circle.position.x - circle.radius + circle.velocity.x <=
+      rectangle.position.x + rectangle.width
+  );
+}
+
 function animate() {
   requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
+
+  if ((keys.w.pressed && lastkey === "w") || keys.ArrowUp.pressed) {
+    // for continue movement if empty space
+    for (let i = 0; i < boundries.length; i++) {
+      const boundary = boundries[i];
+      if (
+        circleCollidesWithRectangle({
+          circle: {
+            ...player,
+            velocity: { x: 0, y: -5 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        player.velocity.y = 0;
+        break;
+      } else {
+        player.velocity.y = -5;
+      }
+    }
+  } else if ((keys.a.pressed && lastkey === "a") || keys.ArrowLeft.pressed) {
+    // for continue movement if empty space
+    for (let i = 0; i < boundries.length; i++) {
+      const boundary = boundries[i];
+      if (
+        circleCollidesWithRectangle({
+          circle: {
+            ...player,
+            velocity: { x: -5, y: 0 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        player.velocity.x = 0;
+        break;
+      } else {
+        player.velocity.x = -5;
+      }
+    }
+  } else if ((keys.s.pressed && lastkey === "s") || keys.ArrowDown.pressed) {
+    // for continue movement if empty space
+    for (let i = 0; i < boundries.length; i++) {
+      const boundary = boundries[i];
+      if (
+        circleCollidesWithRectangle({
+          circle: {
+            ...player,
+            velocity: { x: 0, y: 5 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        player.velocity.y = 0;
+        break;
+      } else {
+        player.velocity.y = 5;
+      }
+    }
+  } else if ((keys.d.pressed && lastkey === "d") || keys.ArrowRight.pressed) {
+    // for continue movement if empty space
+    for (let i = 0; i < boundries.length; i++) {
+      const boundary = boundries[i];
+      if (
+        circleCollidesWithRectangle({
+          circle: {
+            ...player,
+            velocity: { x: 5, y: 0 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        player.velocity.x = 0;
+        break;
+      } else {
+        player.velocity.x = 5;
+      }
+    }
+  }
   boundries.forEach((boundary) => {
     boundary.draw();
-  });
 
+    // for collision detection
+    if (
+      circleCollidesWithRectangle({
+        circle: player,
+        rectangle: boundary,
+      })
+    ) {
+      player.velocity.y = 0;
+      player.velocity.x = 0;
+    }
+  });
   player.update();
-  player.velocity.y = 0;
-  player.velocity.x = 0;
-  if ((keys.w.pressed && lastkey === "w") || keys.ArrowUp.pressed) {
-    player.velocity.y = -5;
-  } else if ((keys.a.pressed && lastkey === "a") || keys.ArrowLeft.pressed) {
-    player.velocity.x = -5;
-  } else if ((keys.s.pressed && lastkey === "s") || keys.ArrowDown.pressed) {
-    player.velocity.y = 5;
-  } else if ((keys.d.pressed && lastkey === "d") || keys.ArrowRight.pressed) {
-    player.velocity.x = 5;
-  }
+  // player.velocity.y = 0;
+  // player.velocity.x = 0;
 }
 animate();
 
