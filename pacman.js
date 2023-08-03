@@ -54,13 +54,25 @@ const keys = {
   w: {
     pressed: false,
   },
+  ArrowUp: {
+    pressed: false,
+  },
   a: {
+    pressed: false,
+  },
+  ArrowLeft: {
     pressed: false,
   },
   s: {
     pressed: false,
   },
+  ArrowDown: {
+    pressed: false,
+  },
   d: {
+    pressed: false,
+  },
+  ArrowRight: {
     pressed: false,
   },
 };
@@ -100,13 +112,13 @@ function animate() {
   player.update();
   player.velocity.y = 0;
   player.velocity.x = 0;
-  if (keys.w.pressed && lastkey === "w") {
+  if ((keys.w.pressed && lastkey === "w") || keys.ArrowUp.pressed) {
     player.velocity.y = -5;
-  } else if (keys.a.pressed && lastkey === "a") {
+  } else if ((keys.a.pressed && lastkey === "a") || keys.ArrowLeft.pressed) {
     player.velocity.x = -5;
-  } else if (keys.s.pressed && lastkey === "s") {
+  } else if ((keys.s.pressed && lastkey === "s") || keys.ArrowDown.pressed) {
     player.velocity.y = 5;
-  } else if (keys.d.pressed && lastkey === "d") {
+  } else if ((keys.d.pressed && lastkey === "d") || keys.ArrowRight.pressed) {
     player.velocity.x = 5;
   }
 }
@@ -118,21 +130,75 @@ addEventListener("keydown", ({ key }) => {
       keys.w.pressed = true;
       lastkey = "w";
       break;
+    case "ArrowUp":
+      keys.ArrowUp.pressed = true;
+      lastkey = "ArrowUp";
+      break;
     case "a":
       keys.a.pressed = true;
       lastkey = "a";
+      break;
+    case "ArrowLeft":
+      keys.ArrowLeft.pressed = true;
+      lastkey = "ArrowLeft";
       break;
     case "s":
       keys.s.pressed = true;
       lastkey = "s";
       break;
+    case "ArrowDown":
+      keys.ArrowDown.pressed = true;
+      lastkey = "ArrowDown";
+      break;
     case "d":
       keys.d.pressed = true;
       lastkey = "d";
+      break;
+    case "ArrowRight":
+      keys.ArrowRight.pressed = true;
+      lastkey = "ArrowRight";
       break;
 
     default:
       break;
   }
-  console.log(player.velocity);
+});
+addEventListener("keyup", ({ key }) => {
+  switch (key) {
+    case "w":
+      keys.w.pressed = false;
+      lastkey = "w";
+      break;
+    case "ArrowUp":
+      keys.ArrowUp.pressed = false;
+      lastkey = "ArrowUp";
+      break;
+    case "a":
+      keys.a.pressed = false;
+      lastkey = "a";
+      break;
+    case "ArrowLeft":
+      keys.ArrowLeft.pressed = false;
+      lastkey = "ArrowLeft";
+      break;
+    case "s":
+      keys.s.pressed = false;
+      lastkey = "s";
+      break;
+    case "ArrowDown":
+      keys.ArrowDown.pressed = false;
+      lastkey = "ArrowDown";
+      break;
+    case "d":
+      keys.d.pressed = false;
+      lastkey = "d";
+      break;
+    case "ArrowRight":
+      keys.ArrowRight.pressed = false;
+      lastkey = "ArrowRight";
+      break;
+
+    default:
+      break;
+  }
 });
