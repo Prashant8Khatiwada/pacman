@@ -411,9 +411,20 @@ function animate() {
     }
   }
 
-  pellets.forEach((pellet) => {
+  for (let i = pellets.length - 1; i > 0; i--) {
+    const pellet = pellets[i];
     pellet.draw();
-  });
+    if (
+      Math.hypot(
+        player.position.x - pellet.position.x,
+        player.position.y - pellet.position.y
+      ) <
+      player.radius + pellet.radius
+    ) {
+      pellets.splice(i, 1);
+      player.score += 10;
+    }
+  }
 
   boundaries.forEach((boundary) => {
     boundary.draw();
