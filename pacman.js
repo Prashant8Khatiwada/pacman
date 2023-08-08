@@ -1,5 +1,7 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
+const scoreEl = document.querySelector("#scoreEl");
+
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
@@ -94,6 +96,7 @@ const keys = {
   },
 };
 let lastkey = "";
+let score = 0;
 
 const map = [
   ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
@@ -422,7 +425,8 @@ function animate() {
       player.radius + pellet.radius
     ) {
       pellets.splice(i, 1);
-      player.score += 10;
+      score += 10;
+      scoreEl.innerHTML = score;
     }
   }
 
