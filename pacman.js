@@ -42,6 +42,28 @@ class Player {
     this.position.y += this.velocity.y;
   }
 }
+// setting up ghosts
+class Ghost {
+  constructor({ position, velocity, color = "red" }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 15;
+    this.color = color;
+  }
+
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = this.color;
+    c.fill();
+    c.closePath();
+  }
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+  }
+}
 class Pellet {
   constructor({ position }) {
     this.position = position;
@@ -57,6 +79,19 @@ class Pellet {
   }
 }
 const pellets = [];
+const boundaries = [];
+const ghosts = [
+  new Ghost({
+    position: {
+      x: Boundary.width * 6 + Boundary.width / 2,
+      y: Boundary.height + Boundary.height / 2,
+    },
+    velocity: {
+      x: 5,
+      y: 0,
+    },
+  }),
+];
 
 const player = new Player({
   position: {
@@ -114,7 +149,6 @@ const map = [
   ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
 ];
 
-const boundaries = [];
 function createImage(src) {
   const image = new Image();
   image.src = src;
@@ -445,6 +479,61 @@ function animate() {
     }
   });
   player.update();
+  const collisions = [];
+  ghosts.forEach((ghost) => {
+    ghost.update();
+    boundaries.forEach((boundary) => {
+      if (
+        !collisions.includes("right") &&
+        circleCollidesWithRectangle({
+          circle: {
+            ...ghost,
+            velocity: { x: 5, y: 0 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        collisions.push("right");
+      }
+      if (
+        !collisions.includes("left") &&
+        circleCollidesWithRectangle({
+          circle: {
+            ...ghost,
+            velocity: { x: -5, y: 0 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        collisions.push("left");
+      }
+      if (
+        !collisions.includes("up") &&
+        circleCollidesWithRectangle({
+          circle: {
+            ...ghost,
+            velocity: { x: 0, y: -5 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        collisions.push("up");
+      }
+      if (
+        !collisions.includes("down") &&
+        circleCollidesWithRectangle({
+          circle: {
+            ...ghost,
+            velocity: { x: 0, y: 5 },
+          },
+          rectangle: boundary,
+        })
+      ) {
+        collisions.push("down");
+      }
+    });
+    console.log(collisions);
+  });
 }
 animate();
 
