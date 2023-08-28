@@ -52,12 +52,13 @@ class Ghost {
     this.color = color;
     this.prevCollisions = [];
     this.speed = 5;
+    this.scared = false;
   }
 
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = this.color;
+    c.fillStyle = this.scared ? "blue" : this.color;
     c.fill();
     c.closePath();
   }
@@ -488,6 +489,28 @@ function animate() {
       }
     }
   }
+
+  // detect collision between ghosts and player
+
+  for (let i = ghosts.length - 1; i >= 0; i--) {
+    // ghost touches player
+    const ghost = ghosts[i];
+    if (
+      Math.hypot(
+        ghost.position.x - player.position.x,
+        ghost.position.y - player.position.y
+      ) <
+      ghost.radius + player.radius
+    ) {
+      if (ghost.scared) {
+        ghosts.splice(i, 1);
+      } else {
+        cancelAnimationFrame(animationID);
+        console.log("you loose");
+      }
+    }
+  }
+  // power ups go
   for (let i = powerUps.length - 1; i >= 0; i--) {
     const PowerUp = powerUps[i];
     PowerUp.draw();
@@ -505,7 +528,7 @@ function animate() {
         ghost.scared = true;
         setTimeout(() => {
           ghost.scared = false;
-        }, 3000);
+        }, 5000);
       });
     }
   }
@@ -544,16 +567,6 @@ function animate() {
   const collisions = [];
   ghosts.forEach((ghost) => {
     ghost.update();
-    if (
-      Math.hypot(
-        ghost.position.x - player.position.x,
-        ghost.position.y - player.position.y
-      ) <
-      player.radius + player.radius
-    ) {
-      cancelAnimationFrame(animationID);
-      console.log("you loose");
-    }
     boundaries.forEach((boundary) => {
       if (
         !collisions.includes("right") &&
