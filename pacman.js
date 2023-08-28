@@ -510,6 +510,13 @@ function animate() {
       }
     }
   }
+
+  // win condition goes here
+  if (pellets.length == 0) {
+    console.log("You win");
+    cancelAnimationFrame(animationID);
+  }
+
   // power ups go
   for (let i = powerUps.length - 1; i >= 0; i--) {
     const PowerUp = powerUps[i];
