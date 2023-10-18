@@ -27,19 +27,39 @@ class Player {
     this.position = position;
     this.velocity = velocity;
     this.radius = 15;
+    this.radians = 0.75;
+    this.openRate = 0.12;
+    this.rotation = 0;
   }
 
   draw() {
+    c.save();
+    c.translate(this.position.x, this.position.y);
+    c.rotate(this.rotation);
+    c.translate(-this.position.x, -this.position.y);
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.arc(
+      this.position.x,
+      this.position.y,
+      this.radius,
+      this.radians,
+      Math.PI * 2 - this.radians
+    );
+    c.lineTo(this.position.x, this.position.y);
     c.fillStyle = "yellow";
     c.fill();
     c.closePath();
+    c.restore();
   }
   update() {
     this.draw();
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
+    if (this.radians < 0 || this.radians > 0.75) {
+      this.openRate = -this.openRate;
+    }
+    this.radians += this.openRate;
   }
 }
 // setting up ghosts
@@ -133,6 +153,34 @@ const player = new Player({
     y: 0,
   },
 });
+
+// Function to take a screenshot of the canvas
+function takeScreenshot() {
+  const screenshotImage = new Image();
+  screenshotImage.src = canvas.toDataURL(); // Convert the canvas to a data URL
+  return screenshotImage;
+}
+
+// Function to display "Game Over" with a blurred background
+function displayGameOver() {
+  // const screenshot = takeScreenshot(); // Take a screenshot of the canvas
+  // const blurCanvas = document.querySelector("canvas");
+  // const blurContext = blurCanvas.getContext("2d");
+
+  // // Draw the screenshot on a temporary canvas with a blur effect
+  // blurCanvas.width = canvas.width;
+  // blurCanvas.height = canvas.height;
+  // blurContext.filter = "blur(8px)"; // Adjust the blur amount as needed
+  // blurContext.drawImage(screenshot, 0, 0);
+
+  // // Draw the blurred background on the canvas
+  // c.drawImage(blurCanvas, 0, 0);
+
+  // Display the "Game Over" text
+  c.fillStyle = "white";
+  c.font = "48px Arial";
+  c.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2);
+}
 
 const keys = {
   w: {
@@ -506,6 +554,7 @@ function animate() {
         ghosts.splice(i, 1);
       } else {
         cancelAnimationFrame(animationID);
+        displayGameOver();
         console.log("you loose");
       }
     }
@@ -662,7 +711,13 @@ function animate() {
       ghost.prevCollisions = [];
     }
   });
-}
+
+  if (player.velocity.x > 0) player.rotation = 0;
+  else if (player.velocity.x < 0) player.rotation = Math.PI;
+  else if (player.velocity.y > 0) player.rotation = Math.PI / 2;
+  else if (player.velocity.y < 0) player.rotation = Math.PI * 1.5;
+} //end of animate
+
 animate();
 
 // for key eventlistener
