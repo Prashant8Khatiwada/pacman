@@ -154,34 +154,6 @@ const player = new Player({
   },
 });
 
-// Function to take a screenshot of the canvas
-function takeScreenshot() {
-  const screenshotImage = new Image();
-  screenshotImage.src = canvas.toDataURL(); // Convert the canvas to a data URL
-  return screenshotImage;
-}
-
-// Function to display "Game Over" with a blurred background
-function displayGameOver() {
-  // const screenshot = takeScreenshot(); // Take a screenshot of the canvas
-  // const blurCanvas = document.querySelector("canvas");
-  // const blurContext = blurCanvas.getContext("2d");
-
-  // // Draw the screenshot on a temporary canvas with a blur effect
-  // blurCanvas.width = canvas.width;
-  // blurCanvas.height = canvas.height;
-  // blurContext.filter = "blur(8px)"; // Adjust the blur amount as needed
-  // blurContext.drawImage(screenshot, 0, 0);
-
-  // // Draw the blurred background on the canvas
-  // c.drawImage(blurCanvas, 0, 0);
-
-  // Display the "Game Over" text
-  c.fillStyle = "white";
-  c.font = "48px Arial";
-  c.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2);
-}
-
 const keys = {
   w: {
     pressed: false,
@@ -210,6 +182,17 @@ const keys = {
 };
 let lastkey = "";
 let score = 0;
+// Display the "Game Over" text
+function displayGameOver() {
+  c.fillStyle = "white";
+  c.font = "48px Arial";
+  c.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 100);
+  c.fillText(
+    "Your Score: " + score,
+    canvas.width / 2 - 130,
+    canvas.height / 2 - 50
+  );
+}
 
 const map = [
   ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
